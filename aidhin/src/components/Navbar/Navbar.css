@@ -1,0 +1,221 @@
+.navbar {
+    /* ─────────────────────────────────────────────────────────────
+       --navbar-breakpoint is documentation only — CSS media queries
+       can't read custom properties. If you change the width here,
+       change the 640px in the @media rule at the bottom too.
+       ───────────────────────────────────────────────────────────── */
+    --navbar-breakpoint: 640px;
+
+    /* AIDAN NGO's type metrics. The hamburger uses these to work out
+       where that line's centre is, so the two stay aligned if you
+       ever change the brand's size. */
+    --brand-size: 36px;
+    --brand-line-height: 1.5;
+
+    text-align: left;
+}
+
+/* Hidden on wide screens; the media query at the bottom reveals it.
+   Pinned to the viewport's top-right corner, so it lands in the same
+   place on every page regardless of that page's own layout.
+   --hamburger-inset matches the interior pages' --page-inset, so the
+   icon sits as far from the top-right corner as the navbar does from
+   the top-left. Adjust here. */
+.navbar-hamburger {
+    --hamburger-inset: clamp(15px, 2.5vw, 24px);
+    --hamburger-height: 20px;
+
+    display: none;
+    position: fixed;
+    right: var(--hamburger-inset);
+    z-index: 10;
+
+    /* Vertically centred on AIDAN NGO's line rather than sitting at
+       the very top: start at the page inset (where that line begins),
+       then add half the leftover space between the brand's line box
+       and this icon. Derived from the brand's own metrics, so the two
+       stay aligned if --brand-size changes. */
+    top: calc(
+        var(--hamburger-inset)
+        + (var(--brand-size) * var(--brand-line-height) - var(--hamburger-height)) / 2
+    );
+
+    /* Sized box for the bars to be positioned inside. */
+    width: 28px;
+    height: var(--hamburger-height);
+
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.navbar-hamburger-bar {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #BE132D;
+
+    /* Drives both the burger -> X morph and the way back. */
+    transition: transform 250ms ease, opacity 150ms ease;
+}
+
+.navbar-hamburger-bar:nth-child(1) { top: 0; }
+.navbar-hamburger-bar:nth-child(2) { top: 9px; }
+.navbar-hamburger-bar:nth-child(3) { top: 18px; }
+
+/* Open state: outer bars slide to the middle and cross; the middle
+   bar fades out underneath them. Reversing the class reverses the
+   same transitions, so closing morphs back on its own. */
+.navbar-hamburger.is-open .navbar-hamburger-bar:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.navbar-hamburger.is-open .navbar-hamburger-bar:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar-hamburger.is-open .navbar-hamburger-bar:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Links are inline by default; block keeps each on its own line,
+   the way the original <div>s did. */
+.navbar-brand {
+    display: block;
+    /* Without this the block box fills the navbar's full width, so the
+       empty space to the right of the text is still part of the link.
+       fit-content shrinks the clickable area to the words themselves. */
+    width: fit-content;
+    font-family: 'Germania One', sans-serif;
+    font-size: var(--brand-size);
+    /* Same 1.5 it already inherited — named here so the hamburger's
+       alignment maths can reference it. Renders identically. */
+    line-height: var(--brand-line-height);
+    color: #BE132D;
+    text-decoration: none;
+}
+
+.navbar-link {
+    display: block;
+    /* Same reason as .navbar-brand — keep each item's hit area (and its
+       hover underline) to its own text, not the full navbar width. */
+    width: fit-content;
+    font-family: 'Cardo', serif;
+    font-size: 19px;
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Underline every nav item on hover — but not AIDAN NGO, which has
+   its own class and is deliberately left out. */
+.navbar-link:hover,
+.navbar-link:focus-visible {
+    text-decoration: underline;
+}
+
+/* The page we're currently on stays underlined. NavLink adds this
+   class (and aria-current="page") when its route matches. */
+.navbar-link.active {
+    text-decoration: underline;
+
+    /* index.css declares a real Cardo 700, so this is the true bold cut
+       rather than the roman thickened by the browser. Items are
+       width:fit-content inside a fixed 220px column, so the extra width
+       a bold word takes stays within that column and doesn't move the
+       other items. */
+    font-weight: 700;
+}
+
+/* 'Selected Work' is a <button>, so strip the native chrome to make
+   it match the surrounding links. Font family/size come from
+   .navbar-link, which beats the browser's default button styling. */
+.navbar-toggle {
+    background: none;
+    border: 0;
+    padding: 0;
+    line-height: inherit;
+    text-align: inherit;
+    cursor: pointer;
+}
+
+/* Indent the revealed options so the hierarchy reads clearly. */
+.navbar-sublist {
+    padding-left: 20px;
+
+    /* Animating 0fr -> 1fr slides open to the content's natural height,
+       with no hard-coded pixel value to keep in sync. */
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 250ms ease;
+}
+
+.navbar-sublist.is-open {
+    grid-template-rows: 1fr;
+}
+
+/* The 0fr row only hides its content if that content clips.
+   visibility also pulls the collapsed links out of the tab order,
+   so keyboard users can't land on something they can't see. */
+.navbar-sublist-inner {
+    overflow: hidden;
+    visibility: hidden;
+    transition: visibility 250ms;
+}
+
+.navbar-sublist.is-open .navbar-sublist-inner {
+    visibility: visible;
+}
+
+/* Arrow prefix on the revealed options. */
+.navbar-sublist .navbar-link::before {
+    content: '> ';
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .navbar-sublist,
+    .navbar-sublist-inner,
+    .navbar-items,
+    .navbar-items-inner,
+    .navbar-hamburger-bar {
+        transition: none;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SMALL SCREENS (<= 640px)
+   The whole navbar condenses behind a hamburger. Above this width
+   none of these rules apply, so the menu is always visible there.
+   Uses the same 0fr -> 1fr reveal as the Selected Work submenu.
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    /* Every rule here is scoped away from .navbar-static, so a navbar
+       rendered with collapsible={false} keeps its full desktop layout
+       at any width and never shows the hamburger. */
+    .navbar:not(.navbar-static) .navbar-hamburger {
+        display: block;
+    }
+
+    .navbar:not(.navbar-static) .navbar-items {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 250ms ease;
+    }
+
+    .navbar:not(.navbar-static) .navbar-items.is-open {
+        grid-template-rows: 1fr;
+    }
+
+    /* Clips the collapsed content, and keeps the hidden links out of
+       the tab order so keyboard users can't land on them. */
+    .navbar:not(.navbar-static) .navbar-items-inner {
+        overflow: hidden;
+        visibility: hidden;
+        transition: visibility 250ms;
+    }
+
+    .navbar:not(.navbar-static) .navbar-items.is-open .navbar-items-inner {
+        visibility: visible;
+    }
+}

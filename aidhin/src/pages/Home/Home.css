@@ -1,0 +1,9 @@
+.home {
+    min-height: 100svh;
+    padding: clamp(15px, 2.5vw, 24px);
+
+    /* Centre the navbar in the page, both horizontally and vertically. */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

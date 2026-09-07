@@ -1,0 +1,229 @@
+.about {
+    /* ─────────────────────────────────────────────────────────────
+       TUNE HERE
+
+       --about-top         : the gap above the photo, and so above all
+                             the page's content — the navbar is a
+                             separate column and doesn't move with it.
+                             Written as a distance from the TOP OF THE
+                             SCREEN, with the layout's own inset
+                             subtracted back out, so the 112 below IS
+                             the photo's distance from the top of the
+                             window, at every width and height. Edit
+                             that number only; lower moves everything
+                             up. The <= 640px block near the bottom of
+                             this file sets its own value, because
+                             there the navbar sits above the content
+                             rather than beside it.
+       --about-photo-max   : the photo's largest width.
+       --about-photo-width : how wide the photo is.
+                             clamp(minimum, scales-with-viewport, maximum).
+                             Its height follows automatically.
+
+       --about-credit-*    : the photo credit under the image — the gap
+                             above it and its type size.
+       --about-bio-gap     : the gap between the credit and the bio.
+                             Wide enough that the credit reads as the
+                             photo's caption rather than as the bio's
+                             first line.
+       --about-social-*    : the icon row under the bio — how far below
+                             the email it sits, the space between the
+                             two icons, and how big they are.
+       ───────────────────────────────────────────────────────────── */
+    --about-top: calc(70px - var(--page-inset));
+    --about-photo-max: 680px;
+    --about-photo-width: clamp(320px, 120vw, var(--about-photo-max));
+
+    --about-credit-gap: 10px;
+    --about-credit-size: 12px;
+    --about-bio-gap: 28px;
+
+    --about-social-top: 20px;
+    --about-social-gap: 16px;
+    --about-social-size: 26px;
+
+    /* ── Horizontal centring ──────────────────────────────────────
+       The figure is centred in its column by the flexbox below, then
+       slid left by --about-x so it lands on the SCREEN's centre
+       instead. Two candidate shifts, and max() picks the smaller
+       one (these are negative, so the larger number is the shorter
+       slide):
+
+       --about-x-screen : the slide that puts the photo dead centre
+                          on screen. The column's centre sits exactly
+                          half of (navbar column + gap) to the right
+                          of the screen's centre, so undoing that is
+                          the whole trick.
+
+       --about-x-limit  : the slide that puts the photo's left edge
+                          flush with its column's left edge — as far
+                          left as it can go without eating into the
+                          gap that holds it off the navbar. This is
+                          the free space on one side of the photo:
+                          half the column minus half the photo.
+
+       So: wide window → the screen shift wins and the photo is
+       centred on the screen; as the window narrows the free space
+       runs out, the limit takes over, and by the time the photo
+       fills its column both shifts are 0 and it's simply centred in
+       the column. Continuous the whole way — no breakpoint, no jump.
+
+       Percentages here resolve against .about's own width, which IS
+       the content column's width, so no viewport maths (and no
+       scrollbar guessing) is needed.
+
+       Note: this reads --nav-column / --nav-gap from .page-layout.
+       If --nav-column is ever set to `fit-content`, the calc below
+       becomes invalid and the transform is simply dropped, leaving
+       the photo centred in its column. */
+    --about-x-screen: calc(-0.5 * (var(--nav-column) + var(--nav-gap)));
+    --about-x-limit: calc(-50% + min(var(--about-photo-width), 100%) / 2);
+    --about-x: max(var(--about-x-screen), var(--about-x-limit));
+
+    /* ── Vertical placement ───────────────────────────────────────
+       Anchored to the top, NOT centred. Centring made the photo's
+       position depend on the total height of everything in the
+       figure, so the photo climbed by half of every paragraph added
+       below it — and once the content outgrew the window, the part
+       that overflowed sat above the scrollable area where it could
+       not be reached.
+
+       Anchoring means the photo starts at --about-top and the page
+       simply grows downward and scrolls, however much text sits
+       below. The gap can't drift, whatever the content does. */
+    flex: 1;
+    display: flex;
+
+    /* A column: the figure, then the bio beneath it. Note this flips
+       what the two alignment properties mean — align-items is now the
+       horizontal one, and the vertical axis starts at the top on its
+       own, which is exactly the anchoring described above. */
+    flex-direction: column;
+    align-items: center;
+    padding-top: var(--about-top);
+
+    /* Applied after layout, so the slide never disturbs the centring. */
+    transform: translateX(var(--about-x));
+}
+
+/* Credit and bio line up under the photo's left edge because all three
+   are the same width: these two are sized to the photo, and the photo
+   fills the figure. */
+.about-figure,
+.about-bio,
+.about-socials {
+    width: var(--about-photo-width);
+
+    /* The photo never exceeds its column, so it can't reach the navbar
+       (--nav-gap holds it off on the left) or the screen edge
+       (--page-inset holds it off on the right). Once the column is
+       narrower than --about-photo-width the photo simply becomes the
+       column's width, shrinking continuously as the window narrows —
+       no breakpoint, no jump. */
+    max-width: 100%;
+}
+
+/* figure carries a UA margin by default. */
+.about-figure {
+    margin: 0;
+}
+
+/* Its own block, a sibling of the figure rather than part of it. */
+.about-bio {
+    margin-top: var(--about-bio-gap);
+    font-family: 'Cardo', var(--sans);
+    font-size: 18px;
+}
+
+/* This project sets no global anchor styling, so without this the link
+   would arrive in browser-default blue and underlined. Inheriting takes
+   the bio's own colour and Cardo; the italic is then what sets the
+   address apart from the text around it. index.css declares a real
+   Cardo italic, so this is the true italic cut rather than the roman
+   slanted by the browser. */
+.about-email {
+    color: inherit;
+    text-decoration: none;
+    font-style: italic;
+}
+
+/* Same convention as the navbar's links: no underline at rest, one on
+   hover. focus-visible is included so the affordance reaches keyboard
+   users too, who never trigger :hover. */
+.about-email:hover,
+.about-email:focus-visible {
+    text-decoration: underline;
+}
+
+/* Instagram then YouTube, sitting under the email. */
+.about-socials {
+    margin-top: var(--about-social-top);
+    display: flex;
+    align-items: center;
+    gap: var(--about-social-gap);
+}
+
+.about-social {
+    /* inline-flex shrinks the link to the icon, so the clickable area is
+       the artwork rather than a line box taller than it. */
+    display: inline-flex;
+
+    /* The SVGs are drawn in currentColor, so this is what actually
+       colours them — and what makes them follow the theme. */
+    color: inherit;
+
+    transition: opacity 150ms ease;
+}
+
+.about-social:hover,
+.about-social:focus-visible {
+    /* The email underlines on hover; an icon has nothing to underline,
+       so it dims instead. */
+    opacity: 0.55;
+}
+
+.about-social svg {
+    width: var(--about-social-size);
+    height: var(--about-social-size);
+    display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .about-social {
+        transition: none;
+    }
+}
+
+.about-photo {
+    /* The figure owns the width now; the photo just fills it. */
+    width: 100%;
+    height: auto;
+}
+
+/* Outside the photo, tucked under its bottom-left corner. */
+.about-credit {
+    margin-top: var(--about-credit-gap);
+    font-family: 'Inter', var(--sans);
+    font-size: var(--about-credit-size);
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SMALL SCREENS (<= 640px)
+   The navbar is a hamburger on top and the content column already
+   spans the full width (see PageLayout.css), so the column's centre
+   IS the screen's centre — there's nothing to slide. Kill the shift.
+
+   --about-top is a plain gap here rather than a screen distance,
+   because the navbar now sits above the content instead of beside
+   it: the photo is measured from the bottom of the navbar block, not
+   from the top of the window.
+   Keep this number in sync with PageLayout.css and Navbar.css.
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .about {
+        --about-x: 0px;
+        --about-top: 12px;
+    }
+}

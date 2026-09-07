@@ -1,0 +1,114 @@
+.page-layout {
+    /* ─────────────────────────────────────────────────────────────
+       TUNE HERE
+
+       --page-inset  : gap between the layout and the screen edges.
+                       Drives the distance from BOTH the top and the
+                       left edge, so the navbar's corner spacing stays
+                       uniform from one value. Deliberately the same
+                       clamp() used for --edge-inset on the Splash page.
+
+       --nav-column  : width reserved for the navbar's column. Page
+                       content starts after this, so it sets where
+                       every interior page's content begins.
+                       Use `fit-content` instead of a length to let it
+                       shrink-wrap to the longest menu item.
+
+       --nav-gap     : horizontal space between the navbar column and
+                       the page content.
+
+       clamp(minimum, scales-with-viewport, maximum)
+       ───────────────────────────────────────────────────────────── */
+    --page-inset: clamp(15px, 2.5vw, 24px);
+    --nav-column: 220px;
+    --nav-gap: clamp(24px, 4vw, 64px);
+
+    min-height: 100svh;
+    padding: var(--page-inset);
+
+    /* Row, not column — this is what lets content sit beside the
+       navbar instead of below it. Items stretch to full height by
+       default, so pages can still centre things vertically. */
+    display: flex;
+    flex-direction: row;
+    gap: var(--nav-gap);
+}
+
+/* Fixed column: doesn't grow, doesn't shrink, so the content's left
+   edge stays put instead of moving with the longest menu item. */
+.page-nav {
+    flex: 0 0 var(--nav-column);
+
+    /* Rides along as the page scrolls, so the menu is reachable from
+       anywhere on a long page.
+
+       Sticky rather than fixed: fixed would take the navbar out of the
+       flow, this column would collapse to nothing, and every page's
+       content would slide left into the space. Sticky leaves the
+       column exactly where it is and only changes when the navbar
+       stops scrolling with it.
+
+       align-self stops the flex row stretching this column to the full
+       page height — a box that tall has no room to move within its
+       parent, and sticky would never engage. Shrunk to the navbar's
+       own height, it has the rest of the page to travel through.
+
+       top matches the layout's own padding, which is where the navbar
+       already sits, so it doesn't jump on the first pixel of scroll —
+       it simply stays put. */
+    position: sticky;
+    top: var(--page-inset);
+    align-self: flex-start;
+    z-index: 5;
+}
+
+.page-content {
+    /* Take the rest of the width. min-width:0 stops wide content
+       (a big photo, a long word) from forcing the column wider. */
+    flex: 1;
+    min-width: 0;
+
+    /* Fill the height, so pages that centre their content have a
+       container with real height to centre inside. */
+    display: flex;
+    flex-direction: column;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SMALL SCREENS (<= 640px)
+   The navbar collapses to a hamburger at this width (see Navbar.css),
+   so the side-by-side column stops making sense — stack it instead.
+   Keep this number in sync with the breakpoint in Navbar.css.
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .page-layout {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .page-nav {
+        flex: none;
+
+        /* align-self means the HORIZONTAL axis now that the layout is a
+           column, so the flex-start above would shrink the bar to the
+           width of its text. Put it back to full width. */
+        align-self: stretch;
+
+        /* Page content passes underneath here (it's below the navbar,
+           not beside it), so the bar has to be opaque. It also has to
+           reach the top of the window rather than stopping at the
+           layout's inset, or content would show through the gap above
+           it — hence pulling up by the inset and paying it back as
+           padding, which leaves the navbar looking exactly where it
+           was. */
+        top: 0;
+        margin-top: calc(-1 * var(--page-inset));
+        padding-top: var(--page-inset);
+        background: var(--bg);
+    }
+
+    /* Vertical breathing room now that content sits below the navbar. */
+    .page-content {
+        margin-top: 40px;
+    }
+}

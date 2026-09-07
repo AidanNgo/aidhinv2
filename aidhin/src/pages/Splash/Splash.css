@@ -1,0 +1,96 @@
+.splash {
+    /* ─────────────────────────────────────────────────────────────
+       TUNE HERE — these three lines control the whole layout.
+       Each is clamp(minimum, scales-with-viewport, maximum).
+
+       --edge-inset  : gap between the words and the screen edges.
+                       Smaller = closer to the borders.
+       --name-size   : font size of AIDAN / NGO.
+       --photo-width : width of the centre photo. Its height
+                       follows automatically (the image is 2:3).
+       --photo-frame : thickness of the white border around the
+                       photo, on all four sides.
+       --photo-hover-opacity : how far the photo fades on hover.
+                       1 = no fade, 0 = invisible.
+       ───────────────────────────────────────────────────────────── */
+    --edge-inset: clamp(15px, 2.5vw, 24px);
+    --name-size: clamp(40px, 5vw, 72px);
+    --photo-width: clamp(200px, 26vw, 240px);
+    --photo-frame: 12px;
+    --photo-hover-opacity: 0.7;
+
+    min-height: 100svh;
+    background-color: #BE132D;
+
+    /* One value drives all four corners, so they stay uniform. */
+    padding: var(--edge-inset);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.splash .name-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.splash .name {
+    font-family: 'Germania One', sans-serif;
+    color: #FFFFFF;
+    font-size: var(--name-size);
+
+    /* Trim the inherited leading so the glyphs sit the same
+       distance from the top/bottom edges as from the sides. */
+    line-height: 1;
+}
+
+.splash .splash-photo-link {
+    /* The link is the flex item now, so the centring lives here.
+       auto margins absorb the leftover space equally on all sides. */
+    margin: auto;
+
+    /* Shrink-wrap to the photo, so the clickable area is exactly the
+       photo plus its white frame — no invisible dead zone around it. */
+    width: fit-content;
+}
+
+/* Keyboard users need to see where they are. */
+.splash .splash-photo-link:focus-visible {
+    outline: 3px solid #FFFFFF;
+    outline-offset: 8px;
+}
+
+.splash .splash-photo {
+    /* Normally --photo-width wins. On short/landscape screens the
+       38svh cap takes over so the photo can't push the bottom names
+       off screen. Capping the WIDTH (not the height) keeps the
+       2:3 aspect ratio intact either way. */
+    width: min(var(--photo-width), 38svh);
+    height: auto;
+
+    /* White rectangle behind the photo. A border hugs the image, so
+       it tracks every size change automatically.
+       content-box makes the frame grow OUTWARD — with the project's
+       default border-box it would eat into the photo instead. */
+    box-sizing: content-box;
+    border: var(--photo-frame) solid #FFFFFF;
+
+    transition: opacity 300ms ease;
+}
+
+/* Hover feedback, so the photo reads as clickable.
+   The (hover: hover) guard keeps touchscreens out — otherwise a tap
+   on a phone leaves the photo stuck faded until you tap elsewhere. */
+@media (hover: hover) {
+    .splash .splash-photo-link:hover .splash-photo {
+        opacity: var(--photo-hover-opacity);
+    }
+}
+
+/* Keyboard users get the same cue when tabbing to the photo. */
+.splash .splash-photo-link:focus-visible .splash-photo {
+    opacity: var(--photo-hover-opacity);
+}

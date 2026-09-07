@@ -1,0 +1,133 @@
+.video {
+    /* ─────────────────────────────────────────────────────────────
+       TUNE HERE
+
+       --video-top        : the gap above the first title. 54px is the
+                            height of AIDAN NGO's line box in the navbar
+                            (36px at 1.5 line-height), so the first
+                            title lands level with 'Selected Work' — the
+                            navbar's first menu item — rather than at an
+                            arbitrary offset. If --brand-size ever
+                            changes in Navbar.css, this is the number
+                            that follows it.
+       --video-max        : the widest a video gets. Matches the About
+                            page's photo, so the two pages share one
+                            content width.
+       --video-title-gap  : title down to its video.
+       --video-item-gap   : one film down to the next.
+       ───────────────────────────────────────────────────────────── */
+    --video-top: 54px;
+    --video-max: 680px;
+    --video-title-gap: 12px;
+    --video-item-gap: 48px;
+
+    /* ── Horizontal centring ──────────────────────────────────────
+       The same mechanism as the About page, so the two behave
+       identically as the window resizes. Each film is centred in its
+       column by the flexbox below, then slid left by --video-x so it
+       lands on the SCREEN's centre instead. Two candidate shifts, and
+       max() picks the smaller one (these are negative, so the larger
+       number is the shorter slide):
+
+       --video-x-screen : the slide that puts a video dead centre on
+                          screen. The column's centre sits exactly half
+                          of (navbar column + gap) to the right of the
+                          screen's centre, so undoing that is the whole
+                          trick.
+
+       --video-x-limit  : the slide that puts a video's left edge flush
+                          with its column's left edge — as far left as
+                          it can go without eating into the gap that
+                          holds it off the navbar. This is the free
+                          space on one side: half the column minus half
+                          the video.
+
+       So: wide window → the screen shift wins and the video is centred
+       on the screen; as the window narrows the free space runs out,
+       the limit takes over, and by the time the video fills its column
+       both shifts are 0 and it's simply centred in the column.
+       Continuous the whole way — no breakpoint, no jump.
+
+       Percentages here resolve against .video's own width, which IS
+       the content column's width, so no viewport maths (and no
+       scrollbar guessing) is needed.
+
+       Note: this reads --nav-column / --nav-gap from .page-layout.
+       If --nav-column is ever set to `fit-content`, the calc below
+       becomes invalid and the transform is simply dropped, leaving
+       the films centred in their column. */
+    --video-x-screen: calc(-0.5 * (var(--nav-column) + var(--nav-gap)));
+    --video-x-limit: calc(-50% + min(var(--video-max), 100%) / 2);
+    --video-x: max(var(--video-x-screen), var(--video-x-limit));
+
+    padding-top: var(--video-top);
+
+    /* A column of films, each centred in the content column — the slide
+       above then carries them out to the screen's centre. Titles stay
+       at the left edge of their own video, because .video-item is only
+       as wide as the video and the heading fills it normally. */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--video-item-gap);
+
+    /* Applied after layout, so the slide never disturbs the centring. */
+    transform: translateX(var(--video-x));
+}
+
+.video-item {
+    width: var(--video-max);
+
+    /* Below --video-max the video simply becomes the column's width,
+       shrinking continuously as the window narrows — no breakpoint,
+       no jump. */
+    max-width: 100%;
+}
+
+.video-title {
+    /* h2 arrives large, bold and with margins of its own; this puts it
+       back to the site's body type. The heading level is for structure,
+       not for size. */
+    margin: 0 0 var(--video-title-gap);
+    font-family: 'Cardo', var(--sans);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.video-embed {
+    display: block;
+    width: 100%;
+
+    /* 16:9 is YouTube's own frame, so the player fills this exactly
+       with no letterboxing. Declaring the ratio rather than a height
+       means the video scales with the column and reserves its space
+       before the player loads, so nothing below it jumps. */
+    aspect-ratio: 16 / 9;
+
+    /* iframes carry a border by default. */
+    border: 0;
+
+    /* Stands in while the player loads, so the slot reads as a video
+       rather than as a hole in the page. */
+    background-color: #d9d9d9;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SMALL SCREENS (<= 640px)
+   The navbar sits above the content here rather than beside it (see
+   PageLayout.css), so there's no brand line to align the first title
+   with — and .page-content already adds its own spacing below the
+   navbar. Drop the offset instead of stacking the two.
+   Keep this number in sync with PageLayout.css and Navbar.css.
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .video {
+        --video-top: 0px;
+
+        /* The content column already spans the full width here, so the
+           column's centre IS the screen's centre — there's nothing to
+           slide. */
+        --video-x: 0px;
+    }
+}
