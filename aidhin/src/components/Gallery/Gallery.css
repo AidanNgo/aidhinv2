@@ -1,0 +1,223 @@
+.gallery-page {
+    /* ─────────────────────────────────────────────────────────────
+       TUNE HERE
+
+       --gallery-top : the gap above the first row. 54px is the height
+                       of AIDAN NGO's line box in the navbar, so the
+                       gallery starts level with 'Selected Work' — the
+                       same rule the Video page uses.
+       --gallery-max : the widest the gallery gets. Both reference sites
+                       land around 1230-1265px; this caps it there so a
+                       large monitor doesn't stretch the photos past
+                       what they were laid out for.
+       ───────────────────────────────────────────────────────────── */
+    --gallery-top: 54px;
+    --gallery-max: 1500px;
+
+    padding-top: var(--gallery-top);
+
+    /* Fill the content column, which already begins after the navbar's
+       gap and stops at the page inset — so the gallery cannot reach the
+       navbar and cannot bleed off the right edge, without either being
+       enforced here. On a monitor wide enough for the cap to bite, the
+       auto margins centre it in that column rather than stranding it
+       against one side.
+
+       Note this page does NOT use the screen-centring slide that About
+       and Video apply. Those pull a narrow column of content out toward
+       the middle of the window; the gallery is already as wide as the
+       space allows, so there's nothing to pull. */
+    width: 100%;
+    max-width: var(--gallery-max);
+    margin-inline: auto;
+}
+
+.gallery {
+    /* ─────────────────────────────────────────────────────────────
+       TUNE HERE
+
+       --gallery-gap     : the space between photos. ONE value drives
+                           both directions — see the note under
+                           .gallery-item — so the margins stay equal
+                           whichever way you measure them.
+                           For reference, Jun Tan's site runs about 2px,
+                           which is what gives that page its dense,
+                           almost-touching feel. Lower this to go that
+                           way; raise it for more air.
+       --gallery-columns : how many columns at this width. Overridden
+                           in the two media queries at the bottom.
+                           Gallery.jsx READS this value to decide how
+                           many columns to deal the photos into, so this
+                           stays the one place the count is defined.
+       --gallery-press-opacity : how far a photo dims while it's being
+                           clicked. 1 removes the press feedback
+                           entirely.
+       --gallery-fade-*  : the reveal as each photo scrolls into view.
+                           `duration` is the fade itself, matched to
+                           the 0.3s used on the old aidhin.com gallery.
+                           A short fade also gives any dropped frame
+                           less time to be noticed; `rise` is how
+                           far the photo drifts upward on its way in.
+                           rise is 0 deliberately: a dropped frame is far
+                           more visible in movement than in a brightness
+                           ramp, because the eye tracks position and
+                           barely registers opacity stepping. It was 14px
+                           if you want the drift back.
+       ───────────────────────────────────────────────────────────── */
+    --gallery-gap: 10px;
+    --gallery-columns: 3;
+    --gallery-fade-duration: 300ms;
+    --gallery-fade-rise: 0px;
+    --gallery-press-opacity: 0.82;
+
+    /* ── The masonry ──────────────────────────────────────────────
+       A row of columns, filled by Gallery.jsx rather than by the
+       browser. That component deals the photos across the columns —
+       1, 2, 3 along the top, then 4, 5, 6 — so the sequence reads left
+       to right.
+
+       This replaced `column-count`, which was simpler but poured the
+       photos DOWN column one before starting column two. The widths
+       work out identically: three flex children sharing the row with
+       two gaps between them come to the same (width - 2 * gap) / 3
+       that column-count produced. */
+    display: flex;
+    gap: var(--gallery-gap);
+}
+
+/* Each column stacks its own share of the photos. flex: 1 makes the
+   columns share the width evenly; min-width: 0 stops a wide photo from
+   forcing its column past its fair share.
+
+   The `gap` here is the VERTICAL space between stacked photos, and it
+   reads the same variable as the row's horizontal gap above — so the
+   space between two photos side by side is exactly the space between
+   two stacked ones. One number moves both, and because both are real
+   gaps rather than computed spans, they're equal to the pixel. */
+.gallery-column {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gallery-gap);
+}
+
+.gallery-item {
+    /* Strip the native button chrome — this is a photo, not a control
+       that should look like one. */
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+
+    /* Says "this opens larger", matching the reference sites. */
+    cursor: zoom-in;
+
+    /* Spacing now comes from the column's `gap`, not from a margin
+       here — and break-inside is gone with the multi-column layout it
+       existed to control. */
+}
+
+/* ── Fade-in on scroll ────────────────────────────────────────────
+   Each photo starts invisible and slightly low, then settles as it
+   comes into view. Gallery.jsx adds .is-visible once the photo has BOTH
+   scrolled into view and finished decoding, so nothing ever fades an
+   empty box up to full opacity.
+
+   Every rule here is scoped to .is-animated, which Gallery.jsx puts on
+   the container. That scoping is deliberate: opacity 0 is a dangerous
+   default, and without it a JavaScript failure would leave a page of
+   invisible photos rather than a page of un-animated ones.
+
+   Only opacity and transform are animated — both are compositor
+   properties, so fifty of these running at once cost no layout work. */
+.gallery.is-animated .gallery-item {
+    opacity: 0;
+    transform: translateY(var(--gallery-fade-rise));
+    transition:
+        opacity var(--gallery-fade-duration) ease-out,
+        transform var(--gallery-fade-duration) ease-out;
+}
+
+.gallery.is-animated .gallery-item.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* Reduced motion means no fade AND no hidden starting state — the
+   photos are simply there. Overriding both rules matters: dropping only
+   the transition would make them appear by snapping from invisible,
+   which is a harsher effect than the one being avoided. */
+@media (prefers-reduced-motion: reduce) {
+    .gallery.is-animated .gallery-item,
+    .gallery.is-animated .gallery-item.is-visible {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+.gallery-photo {
+    display: block;
+    width: 100%;
+
+    /* height:auto lets the width/height attributes on the <img> set the
+       aspect ratio, which is what reserves each slot at the correct
+       height before the photo downloads. Fixing a height here instead
+       would crop, and would put the stagger back to a uniform grid. */
+    height: auto;
+}
+
+/* Press feedback only — deliberately no hover state. The photo dims
+   while the button is held down and returns the moment it's released,
+   so the cue confirms a click rather than following the pointer around
+   the page.
+
+   :active covers keyboard activation too (Enter or Space held down).
+   Nothing overrides the button's default focus ring, so keyboard users
+   still get an indicator of where they are without needing a
+   hover-style dim to stand in for one. */
+.gallery-item:active .gallery-photo {
+    opacity: var(--gallery-press-opacity);
+}
+
+.gallery-photo {
+    transition: opacity 150ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gallery-photo {
+        transition: none;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   MEDIUM SCREENS
+   Three columns inside a shrinking content column makes each photo too
+   small to read, so drop to two before that happens.
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 1000px) {
+    .gallery {
+        --gallery-columns: 2;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SMALL SCREENS (<= 640px)
+   The navbar moves above the content here (see PageLayout.css) and the
+   column spans the full width. One photo per row, full width — the same
+   place both reference sites end up.
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .gallery {
+        --gallery-columns: 1;
+    }
+
+    /* The navbar sits above the content here, and .page-content already
+       adds its own spacing below it — so drop the offset rather than
+       stacking the two, exactly as About and Video do. */
+    .gallery-page {
+        --gallery-top: 0px;
+    }
+}

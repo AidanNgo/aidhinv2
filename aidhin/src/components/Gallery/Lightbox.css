@@ -1,0 +1,126 @@
+.lightbox {
+    /* ─────────────────────────────────────────────────────────────
+       TUNE HERE
+
+       --lightbox-backdrop : the dim behind the photo.
+       --lightbox-inset    : breathing room between the photo and the
+                             screen edges. Also keeps the photo clear of
+                             the arrows on narrow windows.
+       --lightbox-control  : size of the close and arrow buttons.
+       ───────────────────────────────────────────────────────────── */
+    --lightbox-backdrop: rgba(255, 255, 255, 0.97);
+    --lightbox-inset: clamp(16px, 4vw, 56px);
+    --lightbox-control: 44px;
+
+    /* Fixed, so it covers the page no matter how far down the gallery
+       the reader had scrolled. */
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--lightbox-inset);
+
+    background: var(--lightbox-backdrop);
+
+    /* The backdrop is the click target for dismissing, so say so. */
+    cursor: zoom-out;
+}
+
+.lightbox-photo {
+    /* Fit the photo inside the padded area whatever its shape: tall
+       frames are bounded by the height, wide ones by the width, and
+       neither is cropped or enlarged past its own resolution. */
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+
+    /* The photo is not a dismiss target — only the space around it. */
+    cursor: default;
+}
+
+/* Shared reset for the three controls. */
+.lightbox-close,
+.lightbox-nav {
+    position: absolute;
+    z-index: 1;
+
+    width: var(--lightbox-control);
+    height: var(--lightbox-control);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    color: var(--text);
+
+    transition: opacity 150ms ease;
+}
+
+.lightbox-close svg,
+.lightbox-nav svg {
+    width: 100%;
+    height: 100%;
+
+    /* Drawn as strokes rather than filled shapes, so one path each. */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.lightbox-close:hover,
+.lightbox-nav:hover,
+.lightbox-close:focus-visible,
+.lightbox-nav:focus-visible {
+    opacity: 0.5;
+}
+
+.lightbox-close {
+    top: var(--lightbox-inset);
+    right: var(--lightbox-inset);
+}
+
+/* Vertically centred on the photo, hard against each edge. */
+.lightbox-nav {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.lightbox-prev {
+    left: var(--lightbox-inset);
+}
+
+.lightbox-next {
+    right: var(--lightbox-inset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lightbox-close,
+    .lightbox-nav {
+        transition: none;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SMALL SCREENS (<= 640px)
+   Side arrows would sit on top of the photo once the window is this
+   narrow, so move them to the bottom corners where they're still
+   reachable by thumb but clear of the image.
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .lightbox-nav {
+        top: auto;
+        bottom: var(--lightbox-inset);
+        transform: none;
+    }
+}
