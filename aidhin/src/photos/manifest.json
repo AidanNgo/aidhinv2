@@ -156,11 +156,6 @@
       "height": 1920
     },
     {
-      "file": "image36.jpg",
-      "width": 1280,
-      "height": 1920
-    },
-    {
       "file": "image37.jpg",
       "width": 1280,
       "height": 1920
@@ -188,269 +183,249 @@
   ],
   "travel": [
     {
-      "file": "image3.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "01.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image4.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "02.jpg",
+      "width": 1280,
+      "height": 1920
     },
     {
-      "file": "image5.jpg",
-      "width": 6196,
-      "height": 4131
+      "file": "03.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image6.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "04.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image7.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "05.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image8.jpg",
-      "width": 4024,
-      "height": 6036
+      "file": "06.jpg",
+      "width": 1280,
+      "height": 1920
     },
     {
-      "file": "image9.jpg",
-      "width": 6165,
-      "height": 4110
+      "file": "07.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image10.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "08.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image11.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "09.jpg",
+      "width": 1920,
+      "height": 1440
     },
     {
-      "file": "image12.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "10.jpg",
+      "width": 1280,
+      "height": 1920
     },
     {
-      "file": "image13.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "11.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image14.jpg",
-      "width": 4160,
-      "height": 5200
+      "file": "12.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image15.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "13.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image16.jpg",
-      "width": 4659,
-      "height": 3727
+      "file": "14.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image17.jpg",
-      "width": 4160,
-      "height": 5200
+      "file": "15.jpg",
+      "width": 1280,
+      "height": 1920
     },
     {
-      "file": "image18.jpg",
-      "width": 4160,
-      "height": 5200
+      "file": "16.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image19.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "17.jpg",
+      "width": 1280,
+      "height": 1920
     },
     {
-      "file": "image20.jpg",
-      "width": 6203,
-      "height": 4135
+      "file": "18.jpg",
+      "width": 1920,
+      "height": 1440
     },
     {
-      "file": "image21.jpg",
-      "width": 5743,
-      "height": 3829
+      "file": "19.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image22.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "20.jpg",
+      "width": 1920,
+      "height": 1536
     },
     {
-      "file": "image23.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "21.jpg",
+      "width": 1499,
+      "height": 1920
     },
     {
-      "file": "image24.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "22.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image25.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "23.jpg",
+      "width": 1280,
+      "height": 1920
     },
     {
-      "file": "image26.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "24.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image27.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "25.jpg",
+      "width": 1440,
+      "height": 1920
     },
     {
-      "file": "image28.jpg",
-      "width": 5972,
-      "height": 3981
+      "file": "26.jpg",
+      "width": 1440,
+      "height": 1920
     },
     {
-      "file": "image29.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "27.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image30.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "28.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image31.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "29.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image32.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "30.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image33.jpg",
-      "width": 7218,
-      "height": 9243
+      "file": "31.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image34.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "32.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image35.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "33.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image36.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "34.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image37.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "35.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image38.jpg",
-      "width": 5944,
-      "height": 3963
+      "file": "36.jpg",
+      "width": 1536,
+      "height": 1920
     },
     {
-      "file": "image39.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "37.jpg",
+      "width": 1280,
+      "height": 1920
     },
     {
-      "file": "image40.jpg",
-      "width": 4160,
-      "height": 4160
+      "file": "38.jpg",
+      "width": 1280,
+      "height": 1920
     },
     {
-      "file": "image41.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "39.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image42.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "40.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image43.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "41.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image44.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "42.jpg",
+      "width": 1280,
+      "height": 1920
     },
     {
-      "file": "image45.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "43.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image46.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "44.jpg",
+      "width": 1920,
+      "height": 1920
     },
     {
-      "file": "image47.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "45.jpg",
+      "width": 1280,
+      "height": 1920
     },
     {
-      "file": "image48.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "46.jpg",
+      "width": 1280,
+      "height": 1920
     },
     {
-      "file": "image49.jpg",
-      "width": 6240,
-      "height": 4160
+      "file": "47.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image50.jpg",
-      "width": 4160,
-      "height": 6240
+      "file": "50.jpg",
+      "width": 1920,
+      "height": 1280
     },
     {
-      "file": "image51.jpg",
-      "width": 6240,
-      "height": 4160
-    },
-    {
-      "file": "image52.jpg",
-      "width": 6240,
-      "height": 4160
-    },
-    {
-      "file": "image53.jpg",
-      "width": 2448,
-      "height": 3264
-    },
-    {
-      "file": "image54.jpg",
-      "width": 3264,
-      "height": 2448
-    },
-    {
-      "file": "image55.jpg",
-      "width": 3264,
-      "height": 2448
+      "file": "52.jpg",
+      "width": 1440,
+      "height": 1920
     }
   ]
 }

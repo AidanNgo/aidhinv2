@@ -20,7 +20,7 @@
     --photo-hover-opacity: 0.7;
 
     min-height: 100svh;
-    background-color: #BE132D;
+    background-color: var(--brand);
 
     /* One value drives all four corners, so they stay uniform. */
     padding: var(--edge-inset);

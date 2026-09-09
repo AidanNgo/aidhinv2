@@ -54,6 +54,11 @@
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --text-muted: #8f8f8f;
 
+  /* AIDAN NGO's red. Was written out in three separate files; named here
+     so the navbar, the splash and the My Last Name Is Yours header are
+     guaranteed to be the same colour rather than merely looking it. */
+  --brand: #BE132D;
+
   font-family: var(--sans);
   line-height: 1.5;
   /* Light only. This is not just a hint: it stops the browser drawing
@@ -95,4 +100,9 @@ body {
 img {
   display: block;
   max-width: 100%;
+
+  /* A long press on iOS opens a "Save Image" sheet - the touch
+     equivalent of right-click, and not something the contextmenu
+     listener in App.jsx catches. Same deterrent, same limits. */
+  -webkit-touch-callout: none;
 }

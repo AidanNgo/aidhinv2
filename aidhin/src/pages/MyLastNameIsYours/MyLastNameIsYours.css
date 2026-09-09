@@ -1,0 +1,108 @@
+.mlniy {
+    /* ─────────────────────────────────────────────────────────────
+       TUNE HERE
+
+       --mlniy-top   : the gap above the header. Written as a distance
+                       from the TOP OF THE SCREEN with the layout's own
+                       inset subtracted back out, so the 60 below IS the
+                       header's distance from the top of the window at
+                       every width. Edit that number only. Same idea as
+                       --about-top on the About page.
+       --mlniy-width : the block the header is centred inside. Matches
+                       the About photo and the Video player, so all
+                       three pages share one content width — and it's
+                       what the slide below measures against.
+       --mlniy-size  : the type size. clamp() keeps the title from
+                       outgrowing a narrow screen; Germania One is
+                       condensed, so it takes less width than the size
+                       suggests.
+       ───────────────────────────────────────────────────────────── */
+    --mlniy-top: calc(80px - var(--page-inset));
+    --mlniy-width: 680px;
+    --mlniy-size: clamp(22px, 4vw, 35px);
+
+    /* ── Horizontal centring ──────────────────────────────────────
+       The same mechanism as About and Video, so the three pages agree
+       as the window resizes. The header is centred in its column by
+       the flexbox below, then slid left by --mlniy-x so it lands on
+       the SCREEN's centre instead. Two candidate shifts, and max()
+       picks the smaller one (both are negative, so the larger number
+       is the shorter slide):
+
+       --mlniy-x-screen : the slide that puts the header dead centre on
+                          screen. The column's centre sits exactly half
+                          of (navbar column + gap) to the right of the
+                          screen's centre, so undoing that is the whole
+                          trick.
+
+       --mlniy-x-limit  : the slide that puts the header's left edge
+                          flush with its column's left edge — as far
+                          left as it can go without eating into the gap
+                          that holds it off the navbar.
+
+       Wide window → the screen shift wins and the header is centred on
+       screen; as the window narrows the free space runs out, the limit
+       takes over, and once the header fills its column both shifts are
+       0 and it's simply centred in the column. No breakpoint, no jump.
+
+       Percentages resolve against .mlniy's own width, which IS the
+       content column's width, so there's no viewport maths and no
+       scrollbar to guess at. */
+    --mlniy-x-screen: calc(-0.5 * (var(--nav-column) + var(--nav-gap)));
+    --mlniy-x-limit: calc(-50% + min(var(--mlniy-width), 100%) / 2);
+    --mlniy-x: max(var(--mlniy-x-screen), var(--mlniy-x-limit));
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: var(--mlniy-top);
+
+    /* Applied after layout, so the slide never disturbs the centring. */
+    transform: translateX(var(--mlniy-x));
+}
+
+.mlniy-title {
+    width: var(--mlniy-width);
+
+    /* Below --mlniy-width the header simply becomes the column's width,
+       shrinking continuously as the window narrows. */
+    max-width: 100%;
+
+    /* h1 arrives with margins of its own, which would fight --mlniy-top
+       for control of the gap above. */
+    margin: 0;
+
+    /* The text is centred inside this block, and the block is centred on
+       the screen — so the words land on the screen's centre. */
+    text-align: center;
+
+    /* Same face and colour as AIDAN NGO in the navbar. --brand is
+       defined in index.css and used by the navbar too, so the two can't
+       drift apart. */
+    font-family: 'Germania One', sans-serif;
+    font-weight: 400;
+    font-size: var(--mlniy-size);
+    line-height: 1.2;
+    color: var(--brand);
+}
+
+/* Block, so the date range takes its own line under the title while
+   staying part of the same heading. */
+.mlniy-dates {
+    display: block;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SMALL SCREENS (<= 640px)
+   The navbar moves above the content here (see PageLayout.css) and the
+   column already spans the full width, so the column's centre IS the
+   screen's centre — there's nothing to slide. .page-content also adds
+   its own spacing below the navbar, so the top offset goes too rather
+   than stacking on top of it. Exactly what About and Video do.
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .mlniy {
+        --mlniy-x: 0px;
+        --mlniy-top: 0px;
+    }
+}
