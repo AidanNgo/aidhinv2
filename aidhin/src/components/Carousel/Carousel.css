@@ -1,0 +1,320 @@
+.carousel {
+    /* ─────────────────────────────────────────────────────────────
+       TUNE HERE
+
+       --carousel-width  : the widest the stage gets. Bigger than the
+                           680px the other pages share, because this
+                           carousel is the whole page rather than one
+                           element on it.
+       --carousel-height : how tall the stage is, and the number that
+                           decides how big an UPRIGHT photo can be,
+                           since those are limited by height rather
+                           than width — and upright is the majority
+                           here. Raise this one first if you want the
+                           photos larger still.
+
+                           Treat it as a CEILING rather than a promise:
+                           the max-height on .carousel-stage below hands
+                           control to the host page whenever that page
+                           has a height of its own, so the stage can end
+                           up shorter than this on a short window. That
+                           is the point — it is what stops a big photo
+                           pushing the page past the bottom of the
+                           screen.
+       --carousel-fade   : how long one photo takes to dissolve into
+                           the next. THIS is the knob for the cross-fade
+                           speed - nothing in Carousel.jsx hard-codes a
+                           duration, so changing the number here is the
+                           whole edit. Raise it for a slower, more
+                           languid dissolve; lower it if clicking
+                           through starts to feel like waiting.
+       --carousel-arrow* : the arrow buttons — their box, the icon
+                           inside, and the space between them and the
+                           photo.
+       ───────────────────────────────────────────────────────────── */
+    --carousel-width: 1140px;
+    --carousel-height: clamp(400px, 83vh, 920px);
+
+    --carousel-fade: 350ms;
+
+    --carousel-arrow-size: 48px;
+    --carousel-arrow-icon: 26px;
+    --carousel-arrow-gap: 20px;
+
+    /* A row: arrow, photo, arrow. The arrows are laid out BESIDE the
+       stage rather than positioned on top of it, so they can never
+       cover any part of a picture — which is also why the stage below
+       has to be allowed to shrink, since the arrows are taking real
+       width out of the row now. */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--carousel-arrow-gap);
+}
+
+/* ── The fixed stage ──────────────────────────────────────────────
+   The whole design rests on this box never changing size. Because it's
+   fixed, a tall photo and a wide one occupy the same footprint, so
+   nothing below the carousel moves as you step through. Sizing the box
+   to each photo instead would make the page lurch on every click.
+
+   flex rather than a plain width: it grows to --carousel-width when
+   there's room and shrinks when the arrows and the column leave less,
+   so a narrow screen squeezes the photo instead of overflowing. */
+.carousel-stage {
+    flex: 1 1 var(--carousel-width);
+    max-width: var(--carousel-width);
+    height: var(--carousel-height);
+
+    /* ── The no-scroll guarantee ──────────────────────────────────
+       Never taller than the box the carousel has been given, whatever
+       --carousel-height asks for.
+
+       A percentage max-height resolves to `none` when the parent has no
+       height of its own, so a carousel dropped into an ordinary page is
+       unaffected and still gets its full --carousel-height. But when the
+       host page DOES give it a real height — MyLastNameIsYours.css sizes
+       its column to the viewport and lets the carousel have whatever the
+       header leaves — this caps the stage at exactly that much.
+
+       The photo inside is already max-height: 100%, so it follows the
+       stage down instead of spilling out of it. Net effect: the picture
+       is as big as the window allows and not one pixel bigger, so the
+       page never grows a scrollbar. */
+    max-height: 100%;
+}
+
+/* The box the two cross-fading layers are positioned against. They have
+   to occupy the same space rather than being laid out in flow one after
+   the other, which is what position: relative here is for — each layer
+   is absolute and sized to this. The centring of the picture itself
+   happens a layer down, in .carousel-layer. */
+.carousel-frame {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+}
+
+/* ── The two stacked layers ───────────────────────────────────────
+   One per photo of a cross-fade, filling the frame and centring the
+   picture inside itself. They're full-size boxes rather than the images
+   themselves so that each photo has a definite box to measure its
+   max-height against — an img centred by transform has no such box, and
+   a percentage height would have nothing to resolve against.
+
+   The incoming layer is a <button> (the photo opens the lightbox) and
+   the outgoing one a plain <div>; everything below is shared by both, so
+   the button chrome is stripped here rather than in a rule of its own. */
+.carousel-layer {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+
+    /* ── Why the layer itself isn't clickable ─────────────────────
+       The box spans the whole stage, but the photo inside it almost
+       never does — an upright picture leaves wide margins either side,
+       and clicking that empty space should do nothing. So the layer
+       passes pointer events through and the photo alone takes them
+       back (below), which puts the click target exactly on the picture.
+
+       Events still reach the button: pointer-events on an ancestor
+       doesn't stop a click on a descendant from bubbling up through it.
+
+       It also keeps the outgoing layer, mid-fade and directly under the
+       cursor, from swallowing a click meant for the new photo. */
+    pointer-events: none;
+}
+
+.carousel-photo {
+    /* This pair is what guarantees nothing is cropped. The photo scales
+       down until BOTH its width and its height fit, keeping its own
+       aspect ratio — the whole frame is always visible, letterboxed by
+       whichever dimension runs out first.
+
+       Deliberately not object-fit: cover, which would fill the stage by
+       cutting the edges off. Nor object-fit: contain, which would work
+       but stretches the img to the whole stage; letting the intrinsic
+       ratio do the work keeps the element exactly the size of the
+       picture. */
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
+/* The picture is the hit area, and says so — the same zoom-in cursor
+   the gallery's thumbnails use. */
+.carousel-layer-zoom .carousel-photo {
+    pointer-events: auto;
+    cursor: zoom-in;
+}
+
+/* Drawn around the PHOTO rather than the button, which is the full
+   stage — an outline out there would frame a lot of empty space and
+   read as though the whole page were focused. */
+.carousel-layer-zoom:focus-visible {
+    outline: none;
+}
+
+.carousel-layer-zoom:focus-visible .carousel-photo {
+    outline: 2px solid var(--brand);
+    outline-offset: 4px;
+}
+
+/* ── The cross-fade ───────────────────────────────────────────────
+   Two layers rather than one image changing src: swapping the source
+   replaces the pixels instantly, so there'd be nothing to fade BETWEEN.
+
+   Both sides animate. Fading only the incoming photo in would leave the
+   old one showing around its edges the whole time - the photos are
+   different shapes, so an upright one never covers the wide one before
+   it - and those uncovered edges would vanish abruptly at the end.
+
+   Animations, not transitions: each step mounts a fresh element (see the
+   keys in Carousel.jsx), and a transition has no starting value to move
+   from on a newly mounted node. */
+@keyframes carousel-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes carousel-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+.carousel-photo-in {
+    animation: carousel-fade-in var(--carousel-fade) ease-out;
+}
+
+.carousel-photo-out {
+    /* `forwards` is doing real work here, not decoration. Without a
+       fill mode an animation hands the element back to its base style
+       the instant it finishes - and the base style has no opacity, so
+       this photo would fade to nothing and then SNAP BACK to fully
+       visible on the last frame.
+
+       Normally the animationend handler unmounts it quickly enough to
+       hide that, but that's a race, and losing the event (a backgrounded
+       tab, an interrupted animation) leaves the old photo sitting at
+       full strength on top of the new one. Holding the final frame
+       means a stranded element is invisible instead of wrong. */
+    animation: carousel-fade-out var(--carousel-fade) ease-out forwards;
+}
+
+/* ── Arrows ───────────────────────────────────────────────────────
+   Outside the picture, one either side. flex: 0 0 auto keeps them at
+   full size while the stage absorbs any shortage of width — the photo
+   should shrink on a small screen, not the controls.
+
+   No disc behind them any more: that only existed to keep an arrow
+   legible where it overlapped a photo, and out here they always sit on
+   the page's own background. */
+.carousel-nav {
+    flex: 0 0 auto;
+
+    width: var(--carousel-arrow-size);
+    height: var(--carousel-arrow-size);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+
+    /* Muted at rest so the photo holds the eye, full strength when
+       pointed at — the same restraint the rest of the site uses. */
+    color: var(--text-muted);
+    transition: color 150ms ease;
+}
+
+.carousel-nav:hover,
+.carousel-nav:focus-visible {
+    color: var(--text);
+}
+
+/* ── The ends ─────────────────────────────────────────────────────
+   At the first photo there is nothing to the left, and at the last
+   nothing to the right. The arrow fades back rather than disappearing,
+   so the control keeps its place and the row doesn't reflow - and so
+   it reads as "this is the end" rather than "this button vanished".
+
+   aria-disabled rather than the real `disabled` attribute on purpose.
+   A disabled button drops out of the tab order, so clicking through to
+   the last photo would throw keyboard focus back to the top of the
+   document - and the arrow-key handler, which is scoped to this
+   region, would stop working entirely. This keeps the button focusable
+   and lets the click handler simply do nothing. */
+.carousel-nav[aria-disabled='true'] {
+    opacity: 0.25;
+    cursor: default;
+}
+
+.carousel-nav[aria-disabled='true']:hover {
+    color: var(--text-muted);
+}
+
+.carousel-nav svg {
+    width: var(--carousel-arrow-icon);
+    height: var(--carousel-arrow-icon);
+
+    /* Drawn as strokes in currentColor, so the colour above is what
+       actually paints them. */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .carousel-nav {
+        transition: none;
+    }
+
+    /* Straight swap, no dissolve. The outgoing layer is hidden outright
+       rather than given a zero-length fade, so there's never a frame
+       with two photos stacked.
+
+       One consequence worth knowing: Carousel.jsx clears the outgoing
+       photo when its animation reports finished, and a hidden element
+       never runs one - so that element stays mounted until the next
+       step replaces it. It's invisible and costs nothing, but it is why
+       the state doesn't tidy itself here. */
+    .carousel-photo-in {
+        animation: none;
+    }
+
+    .carousel-photo-out {
+        display: none;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SMALL SCREENS (<= 640px)
+   Two arrows plus their gaps are a real bite out of a phone's width,
+   so both shrink to leave the photo as much room as possible. The
+   height eases down too — a phone screen is short, and the header plus
+   a full-height stage would push the arrows below the fold.
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .carousel {
+        --carousel-height: clamp(280px, 52vh, 460px);
+        --carousel-arrow-size: 34px;
+        --carousel-arrow-icon: 20px;
+        --carousel-arrow-gap: 6px;
+    }
+}

@@ -6,7 +6,7 @@ import {
     useRef,
     useState,
 } from 'react'
-import Lightbox from './Lightbox.jsx'
+import Lightbox from '../Lightbox/Lightbox.jsx'
 import './Gallery.css'
 
 /* Masonry photo gallery, shared by both Selected Work pages.

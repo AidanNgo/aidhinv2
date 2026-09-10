@@ -12,14 +12,37 @@
                        the About photo and the Video player, so all
                        three pages share one content width — and it's
                        what the slide below measures against.
+       --mlniy-carousel-gap : the space between the header and the
+                       carousel below it.
        --mlniy-size  : the type size. clamp() keeps the title from
                        outgrowing a narrow screen; Germania One is
                        condensed, so it takes less width than the size
                        suggests.
+       --mlniy-frame : how tall this page is allowed to be. See the
+                       block below — you should not need to touch it.
        ───────────────────────────────────────────────────────────── */
-    --mlniy-top: calc(80px - var(--page-inset));
+    --mlniy-top: calc(60px - var(--page-inset));
     --mlniy-width: 680px;
-    --mlniy-size: clamp(22px, 4vw, 35px);
+    --mlniy-size: clamp(20px, 4vw, 30px);
+    --mlniy-carousel-gap: 20px;
+
+    /* ── Why this page has a fixed height ─────────────────────────
+       This is the one page that must never scroll: it is a single photo
+       at a time, and a picture you have to scroll to see the bottom of
+       is a broken picture.
+
+       So instead of letting the carousel pick a height and hoping it
+       fits, the page claims exactly the screen and hands the leftovers
+       to the carousel. .page-layout is min-height: 100svh with
+       --page-inset of padding above and below, so that inset twice over
+       is everything this column is not allowed to occupy.
+
+       svh, not vh: on a phone, vh is the height with the browser's
+       toolbars HIDDEN, so a 100vh box is taller than what you can
+       actually see until you scroll — which is precisely the scrolling
+       this is meant to prevent. svh is the small viewport, toolbars
+       showing, and it does not change as they slide away. */
+    --mlniy-frame: calc(100svh - 2 * var(--page-inset));
 
     /* ── Horizontal centring ──────────────────────────────────────
        The same mechanism as About and Video, so the three pages agree
@@ -57,6 +80,13 @@
     align-items: center;
     padding-top: var(--mlniy-top);
 
+    /* height, not max-height, so the number below it is definite — the
+       carousel sizes itself as a percentage of this, and a percentage
+       has nothing to resolve against a max-height. Everything is
+       border-box (index.css), so --mlniy-top is spent out of this
+       figure rather than added on top of it. */
+    height: var(--mlniy-frame);
+
     /* Applied after layout, so the slide never disturbs the centring. */
     transform: translateX(var(--mlniy-x));
 }
@@ -86,6 +116,28 @@
     color: var(--brand);
 }
 
+/* The carousel sits under the header. It centres itself inside this
+   column, and the column is already slid to the screen's centre by
+   --mlniy-x above, so the photos land dead centre without the carousel
+   knowing anything about the navbar. */
+.mlniy .carousel {
+    margin-top: var(--mlniy-carousel-gap);
+
+    /* Take whatever height the title has not used, and no more.
+       Measuring the leftover this way rather than subtracting a guessed
+       title height in the calc above means a title that wraps to two
+       lines on a narrow window simply leaves the carousel less — there
+       is no number here to get out of step with the type.
+
+       min-height: 0 is the load-bearing half. A flex item refuses to
+       shrink below its content by default, so without it the carousel
+       would push out the bottom of the page exactly as if none of this
+       existed. --carousel-height then acts as the ceiling and this as
+       the floor, whichever is smaller winning. */
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
 /* Block, so the date range takes its own line under the title while
    staying part of the same heading. */
 .mlniy-dates {
@@ -104,5 +156,27 @@
     .mlniy {
         --mlniy-x: 0px;
         --mlniy-top: 0px;
+
+        /* The navbar is no longer beside this column, it is above it —
+           so unlike on desktop it costs real height, and the frame has
+           to pay for it or the photo goes off the bottom of the phone.
+
+           --mlniy-chrome is what sits between the top of the screen and
+           this page, measured from where it is actually declared:
+
+             navbar : one line of AIDAN NGO — .navbar's --brand-size
+                      (36px) times --brand-line-height (1.5) in
+                      Navbar.css. Its negative margin-top and matching
+                      padding-top in PageLayout.css cancel out, so the
+                      line itself is the whole cost. The menu items add
+                      nothing while closed; they are a collapsed 0fr
+                      grid row.
+             40px   : .page-content's margin-top in PageLayout.css, the
+                      breathing room under the navbar.
+
+           Those two files own these numbers; change one there and this
+           has to follow. */
+        --mlniy-chrome: calc(36px * 1.5 + 40px);
+        --mlniy-frame: calc(100svh - 2 * var(--page-inset) - var(--mlniy-chrome));
     }
 }

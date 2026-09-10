@@ -103,7 +103,7 @@
        hover underline) to its own text, not the full navbar width. */
     width: fit-content;
     font-family: 'Cardo', serif;
-    font-size: 19px;
+    font-size: 17px;
     color: inherit;
     text-decoration: none;
 }

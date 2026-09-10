@@ -42,6 +42,10 @@ const travelFiles = import.meta.glob(
     './travel/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}',
     { eager: true, query: '?url', import: 'default' },
 )
+const myLastNameIsYoursFiles = import.meta.glob(
+    './mylastnameisyours/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}',
+    { eager: true, query: '?url', import: 'default' },
+)
 
 function build(galleryName, files) {
     /* Glob keys are paths like './portraits/image1.jpg'; the manifest is
@@ -65,3 +69,4 @@ function build(galleryName, files) {
 
 export const portraits = build('portraits', portraitFiles)
 export const travel = build('travel', travelFiles)
+export const myLastNameIsYours = build('mylastnameisyours', myLastNameIsYoursFiles)

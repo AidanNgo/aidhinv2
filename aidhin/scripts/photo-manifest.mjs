@@ -25,7 +25,7 @@ const here = dirname(fileURLToPath(import.meta.url))
 const photosDir = join(here, '..', 'src', 'photos')
 
 /* Add a folder name here and it becomes a gallery. */
-const GALLERIES = ['portraits', 'travel']
+const GALLERIES = ['portraits', 'travel', 'mylastnameisyours']
 const EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp'])
 
 /* ── PNG ────────────────────────────────────────────────────────────
