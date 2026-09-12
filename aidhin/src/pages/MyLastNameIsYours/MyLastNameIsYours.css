@@ -133,8 +133,21 @@
        shrink below its content by default, so without it the carousel
        would push out the bottom of the page exactly as if none of this
        existed. --carousel-height then acts as the ceiling and this as
-       the floor, whichever is smaller winning. */
-    flex: 1 1 auto;
+       the floor, whichever is smaller winning.
+
+       flex-GROW is 0 on purpose, though. Letting the row grow into all
+       the leftover space sounds harmless — the stage inside it is
+       capped either way — but the row centres the stage, so every pixel
+       of space the row swallowed came back as half a pixel of gap above
+       the photo. That was the last of the drift: the header-to-photo
+       distance still ran 27px at 1600px and 177px at 700px even with
+       the photo hanging from the top of the stage.
+
+       Not growing, the row is exactly as tall as the stage, so the gap
+       is --mlniy-carousel-gap and nothing else, at every width. The
+       space that used to be split above and below now collects at the
+       bottom of the page, under the photo. */
+    flex: 0 1 auto;
     min-height: 0;
 }
 

@@ -28,18 +28,43 @@
                            whole edit. Raise it for a slower, more
                            languid dissolve; lower it if clicking
                            through starts to feel like waiting.
+       --carousel-photo-align : where the picture sits in the stage when
+                           it doesn't fill it. flex-start hangs every
+                           photo from the same top line; center splits
+                           the empty space above and below. See the note
+                           on .carousel-layer for why this is flex-start.
        --carousel-arrow* : the arrow buttons — their box, the icon
                            inside, and the space between them and the
-                           photo.
+                           photo. They shrink on a narrow window: two
+                           arrows plus their gaps are a real bite out of
+                           the width, and every pixel they hand back is
+                           a pixel the photo grows by.
        ───────────────────────────────────────────────────────────── */
     --carousel-width: 1140px;
-    --carousel-height: clamp(400px, 83vh, 920px);
+
+    /* The vw term is the other half of the dead-space work. 83vh alone
+       is a height that ignores the width, so on a narrow window the box
+       stayed 747px tall while a wide photo shrank to 187px — 560px of
+       nothing, and with the photo centred, half of it wedged between
+       the header and the picture. Capping by width too keeps the box
+       near the size a photo can actually reach there, which is also
+       what keeps the arrows — centred on the stage — alongside the
+       photo instead of stranded in empty space below it.
+
+       65vw rather than something tighter because the stage is only part
+       of the width (the navbar column and the arrows take the rest), so
+       this lands around 1.2x the stage's own width. Tighter starts
+       squeezing UPRIGHT photos, which are the majority here and the
+       ones that actually want the height. */
+    --carousel-height: min(clamp(400px, 83vh, 920px), 65vw);
 
     --carousel-fade: 350ms;
 
-    --carousel-arrow-size: 48px;
-    --carousel-arrow-icon: 26px;
-    --carousel-arrow-gap: 20px;
+    --carousel-photo-align: flex-start;
+
+    --carousel-arrow-size: clamp(34px, 3.6vw, 48px);
+    --carousel-arrow-icon: clamp(20px, 2vw, 26px);
+    --carousel-arrow-gap: clamp(10px, 1.5vw, 20px);
 
     /* A row: arrow, photo, arrow. The arrows are laid out BESIDE the
        stage rather than positioned on top of it, so they can never
@@ -111,8 +136,23 @@
     position: absolute;
     inset: 0;
 
+    /* ── Why the photo hangs from the top ─────────────────────────
+       The stage is a fixed box and the picture rarely fills it — a wide
+       photo on a narrow window can be a third of its height. Centring
+       the picture splits that leftover space above and below, so the
+       narrower the window got the further the photo drifted from the
+       header: 27px of gap at 1600px, 311px at 700px. None of that was
+       --mlniy-carousel-gap, which is the 20px anyone would think to go
+       looking at.
+
+       Hanging it from the top makes the gap identical at every width,
+       and identical for every photo in the set — a wide one and an
+       upright one now start on the same line, where before the top edge
+       jumped on every step. It also matches the rest of the site, where
+       content hangs from a fixed line rather than floating in the
+       middle of the page. */
     display: flex;
-    align-items: center;
+    align-items: var(--carousel-photo-align);
     justify-content: center;
 
     margin: 0;
@@ -312,7 +352,16 @@
    ───────────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
     .carousel {
+        /* No vw cap on this one, unlike the desktop value above. Down
+           here the navbar is above the content rather than beside it,
+           so the stage already has nearly the whole width — the box
+           isn't outrunning the photo the way it does at mid widths, and
+           a vw cap would only shrink upright photos on the screen that
+           can least afford it. */
         --carousel-height: clamp(280px, 52vh, 460px);
+
+        /* Flat numbers, not the clamps above: those are still scaling
+           with vw down here and would keep shrinking. */
         --carousel-arrow-size: 34px;
         --carousel-arrow-icon: 20px;
         --carousel-arrow-gap: 6px;
