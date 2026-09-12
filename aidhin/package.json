@@ -6,7 +6,7 @@
   "scripts": {
     "photos": "node scripts/photo-manifest.mjs",
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/spa-fallback.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
